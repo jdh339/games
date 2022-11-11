@@ -2,6 +2,7 @@ package games.sudoku;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Sudoku {
@@ -42,6 +43,27 @@ public class Sudoku {
         }
         
         scanner.close();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Sudoku sudoku = (Sudoku) o;
+        
+        if (grid.length != sudoku.grid.length) {
+            return false;
+        }
+        for (int rowIndex = 0; rowIndex < grid.length; rowIndex++) {
+            if (!Arrays.equals(grid[rowIndex], sudoku.grid[rowIndex])) {
+                return  false;
+            }
+        } 
+        return true;
     }
 
     public static int[] readRowFromString(String input) throws InvalidInputPuzzleException {
