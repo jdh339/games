@@ -1,0 +1,30 @@
+package games.newpuertorico.model;
+
+public enum BuildingType {
+    SMALL_INDIGO_PLANT,
+    SMALL_SUGAR_MILL,
+    SMALL_MARKET,
+    HACIENDA,
+    CONSTRUCTION_HUT,
+    SMALL_WAREHOUSE,
+
+    INDIGO_PLANT,
+    SUGAR_MILL,
+    HOSPICE,
+    OFFICE,
+    LARGE_MARKET,
+    LARGE_WAREHOUSE,
+
+    TOBACCO_STORAGE,
+    COFFEE_ROASTER,
+    FACTORY,
+    UNIVERSITY,
+    HARBOR,
+    WHARF,
+
+    GUILD_HALL,
+    RESIDENCE,
+    FORTRESS,
+    CUSTOMS_HOUSE,
+    CITY_HALL,
+}
