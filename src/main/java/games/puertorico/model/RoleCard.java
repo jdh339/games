@@ -1,4 +1,4 @@
-package games.newpuertorico.model;
+package games.puertorico.model;
 
 /**
  * A RoleCard represents one of the Role cards in "Puerto Rico".

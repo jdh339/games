@@ -1,4 +1,4 @@
-package games.newpuertorico.model;
+package games.puertorico.model;
 
 /**
  * The ColonistShip class controls distribution of Colonists, including the colonist supply.

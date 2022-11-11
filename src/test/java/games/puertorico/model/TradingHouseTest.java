@@ -1,4 +1,4 @@
-package games.newpuertorico.model;
+package games.puertorico.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

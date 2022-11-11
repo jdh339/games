@@ -1,4 +1,4 @@
-package games.newpuertorico.model;
+package games.puertorico.model;
 
 public class BuildingInventory {
 

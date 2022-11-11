@@ -1,4 +1,4 @@
-package games.newpuertorico.model;
+package games.puertorico.model;
 
 public enum BuildingType {
     SMALL_INDIGO_PLANT,

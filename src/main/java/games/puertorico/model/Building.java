@@ -1,4 +1,4 @@
-package games.newpuertorico.model;
+package games.puertorico.model;
 
 /**
  * A Building represents any of the various buildings in Puerto Rico.
