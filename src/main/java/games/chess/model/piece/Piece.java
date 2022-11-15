@@ -52,7 +52,7 @@ public abstract class Piece {
         if (firstMove == null) {
             firstMove = move;
         }
-        // TODO implement moving squares once Move() is defined.
+        square = move.getDestSquare();
     }
     
     public void removeFromPlay() {

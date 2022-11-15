@@ -27,8 +27,8 @@ class PawnTest {
 
     @Test
     void getCapableSquaresWhiteHasMoved() {
-        Pawn pawn = new Pawn(true, new Square("e4"));
-        pawn.makeMove(new Move());
+        Pawn pawn = new Pawn(true, new Square("e2"));
+        pawn.makeMove(new Move(pawn, new Square("e4")));
         Square[][] expected = new Square[][]{
                 {new Square("e5")}
         };
@@ -57,8 +57,8 @@ class PawnTest {
 
     @Test
     void getCapableSquaresBlackHasMoved() {
-        Pawn pawn = new Pawn(false, new Square("d5"));
-        pawn.makeMove(new Move());
+        Pawn pawn = new Pawn(false, new Square("d7"));
+        pawn.makeMove(new Move(pawn, new Square("d5")));
         Square[][] expected = new Square[][]{
                 {new Square("d4")}
         };

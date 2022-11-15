@@ -12,9 +12,10 @@ class PieceTest {
     void makeMove() {
         Piece rook = new Rook(true, new Square("a1"));
         assertFalse(rook.hasMoved());
-        rook.makeMove(new Move());
+        Square dest = new Square("a6");
+        rook.makeMove(new Move(rook, dest));
         assertTrue(rook.hasMoved());
-        // TODO finish this when method is implemented.        
+        assertEquals(dest, rook.getSquare());
     }
 
     @Test
