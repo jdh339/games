@@ -47,4 +47,16 @@ class SquareTest {
         assertEquals("d6", new Square(3, 5).getName());
         assertEquals("h8", new Square(7, 7).getName());
     }
+
+    @Test
+    void isOnBoard() {
+        assertTrue(new Square(0,0).isOnBoard());
+        assertTrue(new Square(7,7).isOnBoard());
+        assertTrue(new Square("b8").isOnBoard());
+        assertTrue(new Square("h1").isOnBoard());
+        assertFalse(new Square(8, 8).isOnBoard());
+        assertFalse(new Square(0, 8).isOnBoard());
+        assertFalse(new Square(-1, 4).isOnBoard());
+    }
+
 }
