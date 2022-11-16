@@ -47,6 +47,16 @@ public class Move {
         return destSquare;
     }
 
+
+    /**
+     * Writes this move in standard Chess notation.
+     * Examples: e4, Be2, exd5, 0-0, Rd8#
+     * 
+     * // TODO - castling
+     * // TODO - checks and checkmates
+     * 
+     * @return a String representation of the move, in normal Chess notation.
+     */
     public String getCanonicalName() {
         StringBuilder builder = new StringBuilder();
         builder.append(mover.getAbbrevName());

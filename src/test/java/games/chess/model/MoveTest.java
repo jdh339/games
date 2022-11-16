@@ -60,8 +60,30 @@ class MoveTest {
     }
     
     @Test
-    void getCanonicalNameWithPieceDescriptors() {
-        
+    void getCanonicalNameWithFileAmbiguity() {
+        Rook rookA = new Rook(true, new Square("a1"));
+        Move Rad1 = new Move(rookA, new Square("d1"));
+        assertEquals("Rd1", Rad1.getCanonicalName());
+        Rad1.setIsAmbiguous(true, false);
+        assertEquals("Rad1", Rad1.getCanonicalName());
+    }
+    
+    @Test
+    void getCanonicalNameWithRankAmbiguity() {
+        Rook rook8 = new Rook(false, new Square("d8"));
+        Move R8d4 = new Move(rook8, new Square("d4"));
+        assertEquals("Rd4", R8d4.getCanonicalName());
+        R8d4.setIsAmbiguous(false, true);
+        assertEquals("R8d4", R8d4.getCanonicalName());
+    }
+    
+    @Test
+    void getCanonicalNameWithBothAmbiguity() {
+        Queen queenA3 = new Queen(true, new Square("a3"));
+        Move Qa3b4 = new Move(queenA3, new Square("b4"));
+        assertEquals("Qb4", Qa3b4.getCanonicalName());
+        Qa3b4.setIsAmbiguous(true, true);
+        assertEquals("Qa3b4", Qa3b4.getCanonicalName());
     }
     
     @Test
