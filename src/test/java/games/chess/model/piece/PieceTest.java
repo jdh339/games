@@ -11,10 +11,8 @@ class PieceTest {
     @Test
     void makeMove() {
         Piece rook = new Rook(true, new Square("a1"));
-        assertFalse(rook.hasMoved());
         Square dest = new Square("a6");
         rook.makeMove(new Move(rook, dest));
-        assertTrue(rook.hasMoved());
         assertEquals(dest, rook.getSquare());
     }
 

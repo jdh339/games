@@ -33,4 +33,9 @@ public class Pawn extends Piece {
     public String getAbbrevName() {
         return "";
     }
+    
+    private boolean hasMoved() {
+        int initialRankIndex = this.isWhite() ? 1 : 6;
+        return this.getSquare().getRankIndex() != initialRankIndex;
+    }
 }

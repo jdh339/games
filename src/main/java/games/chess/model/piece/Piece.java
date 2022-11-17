@@ -9,13 +9,20 @@ public abstract class Piece {
 
     private final boolean isWhite;
     private Square square;
-    private Move firstMove;
 
     public Piece(boolean isWhite, Square initialPosition) {
         this.isWhite = isWhite;
         this.square = initialPosition;
     }
-        
+
+    public static boolean sameColor(Piece p1, Piece p2) {
+        return p1.isWhite == p2.isWhite;
+    }
+
+    public static boolean differentColors(Piece p1, Piece p2) {
+        return p1.isWhite != p2.isWhite;
+    }
+
     /**
      * Returns the squares this piece can move to based on its current square.
      * The results are given in a series of lists, each list sorted on distance
@@ -31,11 +38,11 @@ public abstract class Piece {
     public abstract String getName();
 
     public abstract String getAbbrevName();
-    
+
     public boolean isWhite() {
         return isWhite;
     }
-    
+
     public Square getSquare() {
         return this.square;
     }
@@ -44,17 +51,10 @@ public abstract class Piece {
         return square != null && square.isOnBoard();
     }
 
-    public boolean hasMoved() {
-        return firstMove != null;
-    }
-    
     public void makeMove(Move move) {
-        if (firstMove == null) {
-            firstMove = move;
-        }
         square = move.getDestSquare();
     }
-    
+
     public void removeFromPlay() {
         this.square = null;
     }
