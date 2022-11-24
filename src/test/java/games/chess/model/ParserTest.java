@@ -1,6 +1,7 @@
 package games.chess.model;
 
 import games.chess.model.piece.Pawn;
+import games.chess.model.piece.Piece;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -121,6 +122,12 @@ class ParserTest {
         assertNotNull(game);
         assertTrue(game.getNextPlayer().isWhite());
         assertEquals(new Square("d6"), game.getEnPassantSquare());
-        assertTrue(game.getPieceAt(new Square("d5")) instanceof Pawn);
+        assertEquals(new Square("e1"), game.getWhitePlayer().getKing().getSquare());
+        Piece whitePawn = game.getPieceAt(new Square("e4")); 
+        Piece blackPawn = game.getPieceAt(new Square("d5")); 
+        assertTrue(whitePawn instanceof Pawn);
+        assertTrue(blackPawn instanceof Pawn);
+        assertTrue(whitePawn.isWhite());
+        assertFalse(blackPawn.isWhite());
     }
 }

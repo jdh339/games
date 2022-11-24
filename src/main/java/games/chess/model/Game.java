@@ -49,6 +49,14 @@ public class Game {
         return whiteToMove ? whitePlayer : blackPlayer;
     }
 
+    public Player getWhitePlayer() {
+        return whitePlayer;
+    }
+    
+    public Player getBlackPlayer() {
+        return blackPlayer;
+    }
+    
     public Square getEnPassantSquare() {
         return enPassantSquare;
     }

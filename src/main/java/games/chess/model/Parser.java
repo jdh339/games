@@ -38,7 +38,7 @@ public class Parser {
                 }
                 
                 boolean isWhite = Character.isUpperCase(c);
-                Square square = new Square(rankIndex, fileIndex);
+                Square square = new Square(fileIndex, rankIndex);
                 Piece piece = makeFromChar(c, isWhite, square);
                 if (isWhite) {
                     whitePieces.add(piece);
