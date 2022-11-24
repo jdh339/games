@@ -1,6 +1,5 @@
 package games.chess.model;
 
-import games.chess.model.move.Move;
 import games.chess.model.piece.*;
 import org.junit.jupiter.api.Test;
 
