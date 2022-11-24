@@ -1,5 +1,6 @@
-package games.chess.model;
+package games.chess.model.move;
 
+import games.chess.model.Square;
 import games.chess.model.piece.Pawn;
 import games.chess.model.piece.Piece;
 
