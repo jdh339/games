@@ -4,6 +4,7 @@ import games.chess.model.piece.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,14 +14,16 @@ class PlayerTest {
     Parser parser;
     String resourcesDir = "src/main/resources/chess/positions/";
     Game initial;
-    Game scandinavian;
+    Game scandinavianGame;
+    Game enPassantGame;
     
     @BeforeEach
     void setUp() {
         parser = new Parser();
         initial = new Game();
         try {
-            scandinavian = parser.parseFromFENFile(resourcesDir + "scandinavian.fen"); 
+            scandinavianGame = parser.parseFromFENFile(resourcesDir + "scandinavian.fen");
+            enPassantGame = parser.parseFromFENFile(resourcesDir + "en_passant.fen");
         } catch (Exception e) {
             fail("Failed during test setup: cannot parse FEN!");
         }
@@ -50,7 +53,7 @@ class PlayerTest {
     
     @Test
     void getCapableMovesReturnsPawnCaptureInScandinavian() {
-        Move[] whiteCapable = scandinavian.getWhitePlayer().getCapableMoves(scandinavian);
+        Move[] whiteCapable = scandinavianGame.getWhitePlayer().getCapableMoves(scandinavianGame);
         Move pawnCapture = null;
         for (Move move : whiteCapable) {
             if (move.isCapture()) {
@@ -61,4 +64,24 @@ class PlayerTest {
         assertNotNull(pawnCapture);
     }
     
+    @Test
+    void getEnPassantMoves() {
+        ArrayList<Move> moves = enPassantGame.getWhitePlayer().getEnPassantMoves(enPassantGame);
+        assertEquals(2, moves.size());
+    }
+    
+    @Test
+    void getCapableMovesEnPassantHas4Captures() {
+        Move[] moves = enPassantGame.getWhitePlayer().getCapableMoves(enPassantGame);
+        int numCaptures = 0;
+        for (Move move : moves) {
+            if (move.getMover() instanceof Queen) {
+                System.out.println(move.getCanonicalName());
+            }
+            if (move.isCapture()) {
+                numCaptures++;
+            }
+        }
+        assertEquals(4, numCaptures);
+    }
 }

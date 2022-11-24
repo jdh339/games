@@ -15,14 +15,6 @@ public abstract class Piece {
         this.square = initialPosition;
     }
 
-    public static boolean sameColor(Piece p1, Piece p2) {
-        return p1.isWhite == p2.isWhite;
-    }
-
-    public static boolean differentColors(Piece p1, Piece p2) {
-        return p1.isWhite != p2.isWhite;
-    }
-
     /**
      * Returns the squares this piece can move to based on its current square.
      * The results are given in a series of lists, each list sorted on distance

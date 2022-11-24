@@ -80,7 +80,8 @@ public class Player {
         }
         // TODO - add special moves.
         moves.addAll(getPawnCaptures(game));
-
+        moves.addAll(getEnPassantMoves(game));
+        
         return moves.toArray(new Move[0]);
     }
 
@@ -92,7 +93,7 @@ public class Player {
             if (occupier == null) {
                 moves.add(new Move(mover, dest)); // Square is empty - valid move!
             } else {
-                if (Piece.differentColors(mover, occupier)) {
+                if (isOppositeColor(occupier)) {
                     if (!(mover instanceof Pawn)) { // Capture if the mover isn't a pawn.
                         moves.add(new Move(mover, dest, true));
                     }
@@ -113,12 +114,12 @@ public class Player {
                 Square right = new Square(s.getFileIndex() + 1, s.getRankIndex() + rankModifier);
 
                 Piece atLeft = game.getPieceAt(left);
-                if (atLeft != null && Piece.differentColors(mover, atLeft)) {
+                if (atLeft != null && isOppositeColor(atLeft)) {
                     pawnCaptures.add(new Move(mover, left, true));
                 }
 
                 Piece atRight = game.getPieceAt(right);
-                if (atRight != null && Piece.differentColors(mover, atRight)) {
+                if (atRight != null && isOppositeColor(atRight)) {
                     pawnCaptures.add(new Move(mover, right, true));
                 }
             }
@@ -126,7 +127,38 @@ public class Player {
         return pawnCaptures;
     }
 
-    private Move[] getSpecialMoves(Game game) {
-        return null;  // TODO
+    protected ArrayList<Move> getEnPassantMoves(Game game) {
+        ArrayList<Move> enPassantMoves = new ArrayList<>(2);
+        Piece capturablePiece = game.getEnPassantCapturablePiece();
+        if (capturablePiece != null && isOppositeColor(capturablePiece)) {
+            Square s = capturablePiece.getSquare();
+            Square left = new Square(s.getFileIndex() - 1, s.getRankIndex());
+            Square right = new Square(s.getFileIndex() + 1, s.getRankIndex());
+            
+            Piece atLeft = game.getPieceAt(left);
+            if (atLeft instanceof Pawn && isSameColor(atLeft)) {
+                Move move = new Move(atLeft, game.getEnPassantSquare(), true);
+                move.setIsEnPassant(true);
+                enPassantMoves.add(move);
+            }
+            
+            Piece atRight = game.getPieceAt(right);
+            if (atRight instanceof Pawn && isSameColor(atRight)) {
+                Move move = new Move(atRight, game.getEnPassantSquare(), true);
+                move.setIsEnPassant(true);
+                enPassantMoves.add(move);
+            }
+        }
+        return enPassantMoves;
+    }
+    
+    // Returns whether the given piece belongs to the player.
+    private boolean isSameColor(Piece piece) {
+        return piece.isWhite() == this.isWhite;
+    }
+    
+    // Returns whether the given piece belongs to the opponent.
+    private boolean isOppositeColor(Piece piece) {
+        return piece.isWhite() != this.isWhite;
     }
 }

@@ -57,8 +57,21 @@ public class Game {
         return blackPlayer;
     }
     
+    
     public Square getEnPassantSquare() {
         return enPassantSquare;
+    }
+    
+    public Piece getEnPassantCapturablePiece() {
+        if (enPassantSquare == null) {
+            return null;
+        }
+        
+        // The "en passant square" is the square behind a capturable pawn.
+        // Therefore, it is always on either the 3rd or 6th rank and the corresponding
+        // pawn is always on either the 4th (index 3) or 5th (index 4) rank.
+        int rankIndex = enPassantSquare.getRankIndex() == 2 ? 3 : 4;
+        return getPieceAt(new Square(enPassantSquare.getFileIndex(), rankIndex));
     }
     
     private void loadPiecePositionsToBoard(Player player) {

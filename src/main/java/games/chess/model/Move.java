@@ -10,6 +10,7 @@ public class Move {
     private final Square originSquare;
     private final Square destSquare;
 
+    boolean isEnPassant = false;
     boolean isAmbiguousByFile = false;
     boolean isAmbiguousByRank = false;
     
@@ -76,5 +77,13 @@ public class Move {
     public void setIsAmbiguous(boolean byFile, boolean byRank) {
         isAmbiguousByFile = byFile;
         isAmbiguousByRank = byRank;
+    }
+    
+    public void setIsEnPassant(boolean isEnPassant) {
+        this.isEnPassant = isEnPassant;
+    }
+
+    public boolean isEnPassant() {
+        return isEnPassant;
     }
 }
