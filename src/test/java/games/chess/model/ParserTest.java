@@ -1,5 +1,6 @@
 package games.chess.model;
 
+import games.chess.model.piece.Pawn;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -80,5 +81,46 @@ class ParserTest {
         assertEquals(expectedEnPassant, matcher.group("enPassant"));
         assertEquals(expectedHalfMovesCounter, matcher.group("halfMovesCounter"));
         assertEquals(expectedMoveNumber, matcher.group("moveNumber"));
+    }
+    
+    @Test
+    void parseFromFENFileThrowsInvalidFENExceptionOnBadFormat() {
+        String[] badFiles = new String[] {
+                "bad_first_mover.fen",
+                "too_few_rows.fen",
+                "too_long_rows.fen",
+                "too_many_rows.fen",
+        };
+        for (String badFile : badFiles) {
+            String badFilePath = resourcesDir + "invalid_fen/" + badFile;
+            assertThrows(InvalidFENFileException.class, () -> parser.parseFromFENFile(badFilePath));
+        }
+    }
+
+    @Test
+    void parseFromFENFileThrowsInvalidFENExceptionWrongSizeRows() {
+        String[] badFiles = new String[] {
+                "too_many_pawns.fen",
+                "too_few_squares_in_row.fen",
+                "too_many_squares_in_row.fen",
+        };
+        for (String badFile : badFiles) {
+            String badFilePath = resourcesDir + "invalid_fen/" + badFile;
+            assertThrows(InvalidFENFileException.class, () -> parser.parseFromFENFile(badFilePath));
+        }
+    }
+    
+    @Test
+    void canCreateGameFromFEN() {
+        Game game = null;
+        try {
+            game = parser.parseFromFENFile(resourcesDir + "scandinavian.fen");
+        } catch (Exception e) {
+            fail("Failed to parse, file not found!");
+        }
+        assertNotNull(game);
+        assertTrue(game.getNextPlayer().isWhite());
+        assertEquals(new Square("d6"), game.getEnPassantSquare());
+        assertTrue(game.getPieceAt(new Square("d5")) instanceof Pawn);
     }
 }
