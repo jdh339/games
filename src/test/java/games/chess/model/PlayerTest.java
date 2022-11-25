@@ -13,20 +13,20 @@ class PlayerTest {
     
     Parser parser;
     String resourcesDir = "src/main/resources/chess/positions/";
-    Game initial;
-    Game scandinavianGame;
-    Game enPassantGame;
     
     @BeforeEach
     void setUp() {
         parser = new Parser();
-        initial = new Game();
+    }
+    
+    // Helper to avoid lots of redundant try/catches
+    Game parseGameFromFileOrFail(String fileName) {
         try {
-            scandinavianGame = parser.parseFromFENFile(resourcesDir + "scandinavian.fen");
-            enPassantGame = parser.parseFromFENFile(resourcesDir + "en_passant.fen");
+            return parser.parseFromFENFile(resourcesDir + fileName);
         } catch (Exception e) {
-            fail("Failed during test setup: cannot parse FEN!");
+            fail("Failed during test setup: cannot parse file " + fileName);
         }
+        return null;
     }
 
     @Test
@@ -45,6 +45,7 @@ class PlayerTest {
     
     @Test
     void getCapableMovesReturnsExpectedNumberAtOpening() {
+        Game initial = new Game();
         Player white = initial.getNextPlayer();
         int expectedNumMoves = 20;
         Move[] actual = white.getCapableMoves(initial);
@@ -53,6 +54,7 @@ class PlayerTest {
     
     @Test
     void getCapableMovesReturnsPawnCaptureInScandinavian() {
+        Game scandinavianGame = parseGameFromFileOrFail("scandinavian.fen");
         Move[] whiteCapable = scandinavianGame.getWhitePlayer().getCapableMoves(scandinavianGame);
         Move pawnCapture = null;
         for (Move move : whiteCapable) {
@@ -66,18 +68,17 @@ class PlayerTest {
     
     @Test
     void getEnPassantMoves() {
+        Game enPassantGame = parseGameFromFileOrFail("en_passant.fen");
         ArrayList<Move> moves = enPassantGame.getWhitePlayer().getEnPassantMoves(enPassantGame);
         assertEquals(2, moves.size());
     }
     
     @Test
     void getCapableMovesEnPassantHas4Captures() {
+        Game enPassantGame = parseGameFromFileOrFail("en_passant.fen");
         Move[] moves = enPassantGame.getWhitePlayer().getCapableMoves(enPassantGame);
         int numCaptures = 0;
         for (Move move : moves) {
-            if (move.getMover() instanceof Queen) {
-                System.out.println(move.getCanonicalName());
-            }
             if (move.isCapture()) {
                 numCaptures++;
             }
