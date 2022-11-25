@@ -130,4 +130,19 @@ class ParserTest {
         assertTrue(whitePawn.isWhite());
         assertFalse(blackPawn.isWhite());
     }
+    
+    @Test
+    void canParseFENFileCastlePrivileges() {
+        Game game = null;
+        try {
+            game = parser.parseFromFENFile(resourcesDir + "flank_attack_advanced.fen");
+        } catch (Exception e) {
+            fail("Failed to parse, file not found!");
+        }
+        assertNotNull(game);
+        assertTrue(game.getWhitePlayer().canCastleQueenside);
+        assertFalse(game.getWhitePlayer().canCastleKingside);
+        assertFalse(game.getBlackPlayer().canCastleQueenside);
+        assertTrue(game.getBlackPlayer().canCastleKingside);
+    }
 }

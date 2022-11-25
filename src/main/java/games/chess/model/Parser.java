@@ -52,7 +52,11 @@ public class Parser {
             }
         }
         Player whitePlayer = new Player(true, whitePieces);
+        whitePlayer.canCastleKingside = matcher.group("castling").contains("K");
+        whitePlayer.canCastleQueenside = matcher.group("castling").contains("Q");
         Player blackPlayer = new Player(false, blackPieces);
+        blackPlayer.canCastleKingside = matcher.group("castling").contains("k");
+        blackPlayer.canCastleQueenside = matcher.group("castling").contains("q");
         boolean whiteToMove = matcher.group("playerToMove").equals("w");
         Square enPassantSquare = new Square(matcher.group("enPassant"));
         return new Game(whiteToMove, whitePlayer, blackPlayer, enPassantSquare);
