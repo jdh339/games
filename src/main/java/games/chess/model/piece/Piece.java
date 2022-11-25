@@ -31,6 +31,20 @@ public abstract class Piece {
 
     public abstract String getAbbrevName();
 
+    /**
+     * Returns a single character representing the piece in FEN style.
+     * White pieces are upper-case, black pieces are lower-case.
+     * @return One of [K, Q, R, B, N, P, k, q, r, b, n, p].
+     */
+    public char getFENAbbrevName() {
+        String abbrevName = getAbbrevName();
+        if (abbrevName.length() == 0) {
+            abbrevName = "P";
+        }
+        char c = abbrevName.charAt(0);
+        return isWhite ? Character.toUpperCase(c) : Character.toLowerCase(c);
+    }
+
     public boolean isWhite() {
         return isWhite;
     }

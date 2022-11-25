@@ -51,4 +51,12 @@ class RookTest {
     void getAbbrevName() {
         assertEquals("R", new Rook(false, new Square("a1")).getAbbrevName());
     }
+
+    @Test
+    void getFENAbbrevName() {
+        Rook whiteRook = new Rook(true, new Square("a1"));
+        Rook blackRook = new Rook(false, new Square("a8"));
+        assertEquals('R', whiteRook.getFENAbbrevName());
+        assertEquals('r', blackRook.getFENAbbrevName());
+    }
 }

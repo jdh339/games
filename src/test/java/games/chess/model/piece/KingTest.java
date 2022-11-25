@@ -36,4 +36,12 @@ class KingTest {
     void getAbbrevName() {
         assertEquals("K", new King(true, new Square("e1")).getAbbrevName());
     }
+
+    @Test
+    void getFENAbbrevName() {
+        King whiteKing = new King(true, new Square("e1"));
+        King blackKing = new King(false, new Square("e8"));
+        assertEquals('K', whiteKing.getFENAbbrevName());
+        assertEquals('k', blackKing.getFENAbbrevName());
+    }
 }

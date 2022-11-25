@@ -48,4 +48,12 @@ class BishopTest {
     void getAbbrevName() {
         assertEquals("B", new Bishop(true, new Square("a3")).getAbbrevName());
     }
+
+    @Test
+    void getFENAbbrevName() {
+        Bishop whiteBishop = new Bishop(true, new Square("c1"));
+        Bishop blackBishop = new Bishop(false, new Square("c8"));
+        assertEquals('B', whiteBishop.getFENAbbrevName());
+        assertEquals('b', blackBishop.getFENAbbrevName());
+    }
 }

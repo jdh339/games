@@ -78,4 +78,12 @@ class PawnTest {
     void getAbbrevName() {
         assertEquals("", new Pawn(true, new Square("a2")).getAbbrevName());
     }
+
+    @Test
+    void getFENAbbrevName() {
+        Pawn whitePawn = new Pawn(true, new Square("a2"));
+        Pawn blackPawn = new Pawn(false, new Square("a6"));
+        assertEquals('P', whitePawn.getFENAbbrevName());
+        assertEquals('p', blackPawn.getFENAbbrevName());
+    }
 }

@@ -57,4 +57,12 @@ class KnightTest {
     void getAbbrevName() {
         assertEquals("N", new Knight(true, new Square("b1")).getAbbrevName());
     }
+
+    @Test
+    void getFENAbbrevName() {
+        Knight whiteKnight = new Knight(true, new Square("b1"));
+        Knight blackKnight = new Knight(false, new Square("b8"));
+        assertEquals('N', whiteKnight.getFENAbbrevName());
+        assertEquals('n', blackKnight.getFENAbbrevName());
+    }
 }

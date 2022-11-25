@@ -112,4 +112,12 @@ class QueenTest {
     void getAbbrevName() {
         assertEquals("Q", new Queen(false, new Square("d8")).getAbbrevName());
     }
+
+    @Test
+    void getFENAbbrevName() {
+        Queen whiteQueen = new Queen(true, new Square("d1"));
+        Queen blackQueen = new Queen(false, new Square("d8"));
+        assertEquals('Q', whiteQueen.getFENAbbrevName());
+        assertEquals('q', blackQueen.getFENAbbrevName());
+    }
 }
