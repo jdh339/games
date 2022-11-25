@@ -85,4 +85,57 @@ class PlayerTest {
         }
         assertEquals(4, numCaptures);
     }
+    
+    @Test
+    void playerMakingAKingMoveRemovesCastlingAbility() {
+        Game scandinavianGame = parseGameFromFileOrFail("scandinavian.fen");
+        Player whitePlayer = scandinavianGame.getWhitePlayer();
+        assertTrue(whitePlayer.canCastleKingside);
+        assertTrue(whitePlayer.canCastleQueenside);
+        Move Ke2 = new Move(whitePlayer.getKing(), new Square("e2"));
+        whitePlayer.makeMove(Ke2);
+        assertEquals(new Square("e2"), whitePlayer.getKing().getSquare());
+        assertFalse(whitePlayer.canCastleKingside);
+        assertFalse(whitePlayer.canCastleQueenside);
+    }
+    
+    @Test
+    void playerMakingARookMoveRemovesQueensideCastlingAbility() {
+        Game flankAttackGame = parseGameFromFileOrFail("flank_attack.fen");
+        Player white = flankAttackGame.getWhitePlayer();
+        Player black = flankAttackGame.getBlackPlayer();
+        Square a2 = new Square("a2");
+        Square a7 = new Square("a7");
+        Move Ra2 = new Move(flankAttackGame.getPieceAt(new Square("a1")), a2);
+        Move Ra7 = new Move(flankAttackGame.getPieceAt(new Square("a8")), a7);
+        assertTrue(white.canCastleQueenside);
+        white.makeMove(Ra2);
+        assertFalse(white.canCastleQueenside);
+        assertTrue(white.canCastleKingside);
+        
+        assertTrue(black.canCastleQueenside);
+        black.makeMove(Ra7);
+        assertFalse(black.canCastleQueenside);
+        assertTrue(black.canCastleKingside);
+    }
+
+    @Test
+    void playerMakingARookMoveRemovesKingsideCastlingAbility() {
+        Game flankAttackGame = parseGameFromFileOrFail("flank_attack.fen");
+        Player white = flankAttackGame.getWhitePlayer();
+        Player black = flankAttackGame.getBlackPlayer();
+        Square h2 = new Square("h2");
+        Square h7 = new Square("h7");
+        Move Rh2 = new Move(flankAttackGame.getPieceAt(new Square("h1")), h2);
+        Move Rh7 = new Move(flankAttackGame.getPieceAt(new Square("h8")), h7);
+        assertTrue(white.canCastleKingside);
+        white.makeMove(Rh2);
+        assertFalse(white.canCastleKingside);
+        assertTrue(white.canCastleQueenside);
+
+        assertTrue(black.canCastleKingside);
+        black.makeMove(Rh7);
+        assertFalse(black.canCastleKingside);
+        assertTrue(black.canCastleQueenside);
+    }
 }

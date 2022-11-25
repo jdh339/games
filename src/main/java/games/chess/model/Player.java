@@ -56,6 +56,40 @@ public class Player {
     }
 
     /**
+     * Updates the player's pieces with the given move.
+     * @param move a Move for the player to make.
+     */
+    public void makeMove(Move move) {
+        Piece mover = move.getMover();
+        if (isOppositeColor(mover)) {
+            return;  // We were given a move for the wrong color piece; do nothing.
+        }
+        
+        // If we are moving the king anywhere, then we can no longer castle (after this move).
+        if (mover instanceof King) {
+            canCastleQueenside = false;
+            canCastleKingside = false;
+        }
+        
+        // If we are moving a rook from one of the rook starting squares, we know
+        // that we can no longer castle on that side.
+        // Note: this does not handle all castle prohibitions, e.g. what if our rook
+        // has been captured? Game will check for the other prohibitions.
+        if (mover instanceof Rook) {
+            int startingRankIndex = mover.isWhite() ? 0 : 7;
+            Square aRookStartingSquare = new Square(0, startingRankIndex);
+            Square hRookStartingSquare = new Square(7, startingRankIndex);
+            if (mover.getSquare().equals(aRookStartingSquare)) {
+                canCastleQueenside = false;
+            } else if (mover.getSquare().equals(hRookStartingSquare)) {
+                canCastleKingside = false;
+            }
+        }
+        
+        mover.makeMove(move);
+    }
+
+    /**
      * Returns all moves that the Player is capable of in this position.
      *
      * This includes all on-board squares that the pieces are capable of hitting,
