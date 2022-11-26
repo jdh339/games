@@ -73,11 +73,58 @@ public class Game {
         int rankIndex = enPassantSquare.getRankIndex() == 2 ? 3 : 4;
         return getPieceAt(new Square(enPassantSquare.getFileIndex(), rankIndex));
     }
+
+    /**
+     * This is the most important method of Game. Returns legal moves for the player to move.
+     * This includes all moves their pieces are normally capable of, plus en passant and castling,
+     * minus any that would leave the player in check or otherwise break the rules.
+     * @return an array of Moves that can be taken in this position.
+     */
+    public Move[] getLegalMoves() {
+        Move[] legalMoves = null;
+        Move[] capableMoves = getNextPlayer().getCapableMoves(this);
+        // TODO check legality
+        return capableMoves;
+    }
+
+    /**
+     * Updates the game with the given move being taken.
+     * Note: this does not call getLegalMoves() to check that the move is legal; it is
+     * assumed that the caller has already done that.
+     * 
+     * In the future, we can cache the legal moves or flag them as "legal" to skip this assumption.
+     * @param move a Move object returned from getLegalMoves.
+     */
+    public void makeMove(Move move) {
+        if (move.isCapture()) {
+            Piece captured = getPieceAt(move.getDestSquare());
+            
+            // In the special case of en passant, the captured piece is on a different
+            // square than the "dest square".
+            if (move.getDestSquare() == enPassantSquare) {
+                captured = getEnPassantCapturablePiece();
+            }
+            captured.removeFromPlay();
+        } else if (move.isPawnDoubleJump()) {
+            // For a pawn double jump, set the en passant square to the square behind the pawn. 
+            int rankModifier = move.getMover().isWhite() ? -1 : 1;
+            int rankIndex = move.getDestSquare().getRankIndex() + rankModifier;
+            enPassantSquare = new Square(move.getDestSquare().getFileIndex(), rankIndex);
+        }
+        getNextPlayer().makeMove(move);
+        setPieceAt(move.getOriginSquare(), null);
+        setPieceAt(move.getDestSquare(), move.getMover());
+        whiteToMove = !whiteToMove;
+    }
     
     private void loadPiecePositionsToBoard(Player player) {
         for (Piece piece : player.getPieces()) {
-            Square square = piece.getSquare();
-            board[square.getFileIndex()][square.getRankIndex()] = piece;
+            setPieceAt(piece.getSquare(), piece);
         }
+    }
+    
+    // Private helper function since external callers should use makeMove();
+    private void setPieceAt(Square square, Piece piece) {
+        board[square.getFileIndex()][square.getRankIndex()] = piece;
     }
 }
