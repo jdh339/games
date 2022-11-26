@@ -106,6 +106,47 @@ class MoveTest {
     }
     
     @Test
+    void testIsCastleReturnsTrue() {
+        King whiteKing = new King(true, new Square("e1"));
+        King blackKing = new King(false, new Square("e8"));
+        Move whiteO_O = Move.castleKingside(whiteKing);
+        Move blackO_O = Move.castleKingside(blackKing);
+        Move whiteO_O_O = Move.castleQueenside(whiteKing);
+        Move blackO_O_O = Move.castleQueenside(blackKing);
+        assertTrue(whiteO_O.isCastle());
+        assertTrue(whiteO_O_O.isCastle());
+        assertTrue(blackO_O.isCastle());
+        assertTrue(blackO_O_O.isCastle());
+    }
+    
+    @Test
+    void testIsCastleReturnsFalse() {
+        King whiteKing = new King(true, new Square("e1"));
+        King blackKing = new King(false, new Square("e8"));
+        Rook h1Rook = new Rook(true, new Square("h1"));
+        Move Ke2 = new Move(whiteKing, new Square("e2"));
+        Move Kd7 = new Move(blackKing, new Square("d7"));
+        Move Rf1 = new Move(h1Rook, new Square("f1"));
+        assertFalse(Ke2.isCastle());
+        assertFalse(Kd7.isCastle());
+        assertFalse(Rf1.isCastle());
+    }
+    
+    @Test
+    void testCanonicalNameReturnsCorrectForCastles() {
+        King whiteKing = new King(true, new Square("e1"));
+        King blackKing = new King(false, new Square("e8"));
+        Move whiteO_O = Move.castleKingside(whiteKing);
+        Move blackO_O = Move.castleKingside(blackKing);
+        Move whiteO_O_O = Move.castleQueenside(whiteKing);
+        Move blackO_O_O = Move.castleQueenside(blackKing);
+        assertEquals("O-O", whiteO_O.getCanonicalName());
+        assertEquals("O-O", blackO_O.getCanonicalName());
+        assertEquals("O-O-O", whiteO_O_O.getCanonicalName());
+        assertEquals("O-O-O", blackO_O_O.getCanonicalName());
+    }
+    
+    @Test
     void canParse() {
     }
 }
