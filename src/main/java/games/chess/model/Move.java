@@ -10,7 +10,6 @@ public class Move {
     private final Square originSquare;
     private final Square destSquare;
 
-    boolean isEnPassant = false;
     boolean isAmbiguousByFile = false;
     boolean isAmbiguousByRank = false;
     
@@ -39,6 +38,11 @@ public class Move {
     public boolean isCapture() {
         return isCapture;
     }
+    
+    public boolean isPawnDoubleJump() {
+        return mover instanceof Pawn && 
+                Math.abs(destSquare.getRankIndex() - originSquare.getRankIndex()) > 1;
+    }
 
     public Square getOriginSquare() {
         return originSquare;
@@ -47,7 +51,6 @@ public class Move {
     public Square getDestSquare() {
         return destSquare;
     }
-
 
     /**
      * Writes this move in standard Chess notation.
@@ -77,13 +80,5 @@ public class Move {
     public void setIsAmbiguous(boolean byFile, boolean byRank) {
         isAmbiguousByFile = byFile;
         isAmbiguousByRank = byRank;
-    }
-    
-    public void setIsEnPassant(boolean isEnPassant) {
-        this.isEnPassant = isEnPassant;
-    }
-
-    public boolean isEnPassant() {
-        return isEnPassant;
     }
 }

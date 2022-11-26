@@ -87,6 +87,25 @@ class MoveTest {
     }
     
     @Test
+    void testIsPawnDoubleJump() {
+        Pawn a2Pawn = new Pawn(true, new Square("a2"));
+        Pawn b2Pawn = new Pawn(true, new Square("b2"));
+        Pawn a7Pawn = new Pawn(false, new Square("a7"));
+        Pawn b7Pawn = new Pawn(false, new Square("b7"));
+        Rook h1Rook = new Rook(true, new Square("h1"));
+        Move a3 = new Move(a2Pawn, new Square("a3"));
+        Move b4 = new Move(b2Pawn, new Square("b4"));
+        Move a5 = new Move(a7Pawn, new Square("a5"));
+        Move b6 = new Move(b7Pawn, new Square("b6"));
+        Move Rh3 = new Move(h1Rook, new Square("h3"));
+        assertTrue(b4.isPawnDoubleJump());
+        assertTrue(a5.isPawnDoubleJump());
+        assertFalse(a3.isPawnDoubleJump());
+        assertFalse(b6.isPawnDoubleJump());
+        assertFalse(Rh3.isPawnDoubleJump());
+    }
+    
+    @Test
     void canParse() {
     }
 }

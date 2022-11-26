@@ -172,14 +172,12 @@ public class Player {
             Piece atLeft = game.getPieceAt(left);
             if (atLeft instanceof Pawn && isSameColor(atLeft)) {
                 Move move = new Move(atLeft, game.getEnPassantSquare(), true);
-                move.setIsEnPassant(true);
                 enPassantMoves.add(move);
             }
             
             Piece atRight = game.getPieceAt(right);
             if (atRight instanceof Pawn && isSameColor(atRight)) {
                 Move move = new Move(atRight, game.getEnPassantSquare(), true);
-                move.setIsEnPassant(true);
                 enPassantMoves.add(move);
             }
         }
