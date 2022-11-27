@@ -46,7 +46,7 @@ class PlayerTest {
     @Test
     void getCapableMovesReturnsExpectedNumberAtOpening() {
         Game initial = new Game();
-        Player white = initial.getNextPlayer();
+        Player white = initial.getActivePlayer();
         int expectedNumMoves = 20;
         Move[] actual = white.getCapableMoves(initial);
         assertEquals(expectedNumMoves, actual.length);
@@ -137,5 +137,17 @@ class PlayerTest {
         black.makeMove(Rh7);
         assertFalse(black.canCastleKingside);
         assertTrue(black.canCastleQueenside);
+    }
+    
+    @Test
+    void canCopyPlayer() {
+        Player original = new Player(true);
+        Player copy = new Player(original);
+        Piece originalPawn = original.getPieces()[0];
+        Piece copyPawn = copy.getPieces()[0];
+        assertNotEquals(originalPawn, copyPawn);
+        assertEquals(originalPawn.getSquare(), copyPawn.getSquare());
+        original.makeMove(new Move(originalPawn, new Square("a3")));
+        assertNotEquals(originalPawn.getSquare(), copyPawn.getSquare());
     }
 }

@@ -120,7 +120,7 @@ class ParserTest {
             fail("Failed to parse, file not found!");
         }
         assertNotNull(game);
-        assertTrue(game.getNextPlayer().isWhite());
+        assertTrue(game.getActivePlayer().isWhite());
         assertEquals(new Square("d6"), game.getEnPassantSquare());
         assertEquals(new Square("e1"), game.getWhitePlayer().getKing().getSquare());
         Piece whitePawn = game.getPieceAt(new Square("e4")); 

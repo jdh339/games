@@ -15,6 +15,24 @@ public abstract class Piece {
         this.square = initialPosition;
     }
 
+    public static Piece copy(Piece piece) {
+        if (piece instanceof Pawn) {
+            return new Pawn(piece.isWhite, piece.getSquare());
+        } else if (piece instanceof Rook) {
+            return new Rook(piece.isWhite, piece.getSquare());
+        } else if (piece instanceof Knight) {
+            return new Knight(piece.isWhite, piece.getSquare());
+        } else if (piece instanceof Bishop) {
+            return new Bishop(piece.isWhite, piece.getSquare());
+        } else if (piece instanceof Queen) {
+            return new Queen(piece.isWhite, piece.getSquare());
+        } else if (piece instanceof King) {
+            return new King(piece.isWhite, piece.getSquare());
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Returns the squares this piece can move to based on its current square.
      * The results are given in a series of lists, each list sorted on distance

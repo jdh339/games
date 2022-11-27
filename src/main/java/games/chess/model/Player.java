@@ -43,6 +43,20 @@ public class Player {
         this.pieces = parsedPieces.toArray(new Piece[0]);
     }
 
+    /**
+     * Creates a deep copy of the given player.
+     * @param toCopy a Player to copy, so we can modify the new one without changing the original.
+     */
+    public Player(Player toCopy) {
+        this.isWhite = toCopy.isWhite;
+        this.canCastleKingside = toCopy.canCastleKingside;
+        this.canCastleQueenside = toCopy.canCastleQueenside;
+        this.pieces = new Piece[toCopy.pieces.length];
+        for (int i = 0; i < toCopy.pieces.length; i++) {
+            this.pieces[i] = Piece.copy(toCopy.pieces[i]);
+        }
+    }
+
     public boolean isWhite() {
         return this.isWhite;
     }

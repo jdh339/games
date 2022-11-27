@@ -2,12 +2,15 @@ package games.chess.model;
 
 import games.chess.model.piece.Piece;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Game {
 
     private boolean whiteToMove;
-    private Piece[][] board;
-    private Player whitePlayer;
-    private Player blackPlayer;
+    private final Piece[][] board;
+    private final Player whitePlayer;
+    private final Player blackPlayer;
     private Square enPassantSquare;
 
     public Game() {
@@ -31,10 +34,24 @@ public class Game {
         this.whiteToMove = whiteToMove;
         this.whitePlayer = white;
         this.blackPlayer = black;
-        board = new Piece[8][8];
         this.enPassantSquare = enPassantSquare;
+        this.board = new Piece[8][8];
         loadPiecePositionsToBoard(white);
         loadPiecePositionsToBoard(black);
+    }
+
+    /**
+     * Creates a deep copy of the given game, including copying Players and pieces. 
+     * @param toCopy a Game to copy, so we can modify the new one without changing the original. 
+     */
+    public Game(Game toCopy) {
+        this.whiteToMove = toCopy.whiteToMove;
+        this.whitePlayer = new Player(toCopy.whitePlayer);
+        this.blackPlayer = new Player(toCopy.blackPlayer);
+        this.enPassantSquare = toCopy.enPassantSquare;
+        this.board = new Piece[8][8];
+        loadPiecePositionsToBoard(whitePlayer);
+        loadPiecePositionsToBoard(blackPlayer);
     }
 
 
@@ -45,8 +62,12 @@ public class Game {
         return board[square.getFileIndex()][square.getRankIndex()];
     }
 
-    public Player getNextPlayer() {
+    public Player getActivePlayer() {
         return whiteToMove ? whitePlayer : blackPlayer;
+    }
+    
+    public Player getInactivePlayer() {
+        return whiteToMove ? blackPlayer : whitePlayer; 
     }
 
     public Player getWhitePlayer() {
@@ -57,11 +78,10 @@ public class Game {
         return blackPlayer;
     }
     
-    
     public Square getEnPassantSquare() {
         return enPassantSquare;
     }
-    
+
     public Piece getEnPassantCapturablePiece() {
         if (enPassantSquare == null) {
             return null;
@@ -75,16 +95,60 @@ public class Game {
     }
 
     /**
+     * @return Whether the current player to move is in check.
+     */
+    public boolean isActivePlayerInCheck() {
+        Square target = getActivePlayer().getKing().getSquare();
+        Move[] attackingMoves = getInactivePlayer().getCapableMoves(this);
+        return canHitSquare(attackingMoves, target);
+    }
+
+    /**
+     * @return Whether the player whose turn it *isn't* is in check. This is an illegal position.
+     */
+    public boolean isInactivePlayerInCheck() {
+        Square target = getInactivePlayer().getKing().getSquare();
+        Move[] attackingMoves = getActivePlayer().getCapableMoves(this);
+        return canHitSquare(attackingMoves, target);
+    }
+
+    /**
      * This is the most important method of Game. Returns legal moves for the player to move.
      * This includes all moves their pieces are normally capable of, plus en passant and castling,
      * minus any that would leave the player in check or otherwise break the rules.
      * @return an array of Moves that can be taken in this position.
      */
     public Move[] getLegalMoves() {
-        Move[] legalMoves = null;
-        Move[] capableMoves = getNextPlayer().getCapableMoves(this);
-        // TODO check legality
-        return capableMoves;
+        Move[] capableMoves = getActivePlayer().getCapableMoves(this);
+        ArrayList<Move> legalMoves = new ArrayList<>(capableMoves.length);
+        for (Move move: capableMoves) {
+            if (move.isCastle()) {
+                // You can't castle out of check or "through" check.
+                // Look at the inactive player's current moves to see whether they can hit
+                // the King's current square or the square he passes "through".
+                Move[] opponentMoves = getInactivePlayer().getCapableMoves(this);
+                if (canHitSquare(opponentMoves, move.getOriginSquare())) {
+                    continue;
+                }
+                
+                int fileIndex = (move.getDestSquare().getFileIndex() + 4) / 2; // Average the files.
+                Square intermediate = new Square(fileIndex, move.getOriginSquare().getRankIndex());
+                if (canHitSquare(opponentMoves, intermediate)) {
+                    continue;
+                }
+            }
+            
+            // Now check whether making the move would leave this player in check.
+            // If so, it is an illegal move.
+            Game clone = new Game(this);
+            clone.makeMove(move);
+            if (clone.isInactivePlayerInCheck()) {
+                continue;
+            }
+            
+            legalMoves.add(move);
+        }
+        return legalMoves.toArray(new Move[0]);
     }
 
     /**
@@ -111,7 +175,7 @@ public class Game {
             int rankIndex = move.getDestSquare().getRankIndex() + rankModifier;
             enPassantSquare = new Square(move.getDestSquare().getFileIndex(), rankIndex);
         }
-        getNextPlayer().makeMove(move);
+        getActivePlayer().makeMove(move);
         setPieceAt(move.getOriginSquare(), null);
         setPieceAt(move.getDestSquare(), move.getMover());
         whiteToMove = !whiteToMove;
@@ -126,5 +190,11 @@ public class Game {
     // Private helper function since external callers should use makeMove();
     private void setPieceAt(Square square, Piece piece) {
         board[square.getFileIndex()][square.getRankIndex()] = piece;
+    }
+    
+    // Returns whether any of the capableMoves have <target> as their destination.
+    // This indicates whether a king on <target> is currently checked.
+    private boolean canHitSquare(Move[] capableMoves, Square target) {
+        return Arrays.stream(capableMoves).anyMatch(move -> move.getDestSquare().equals(target));
     }
 }
