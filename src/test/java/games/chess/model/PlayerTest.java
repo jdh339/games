@@ -1,7 +1,6 @@
 package games.chess.model;
 
 import games.chess.model.piece.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,24 +9,6 @@ import java.util.TreeSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
-    
-    Parser parser;
-    String resourcesDir = "src/main/resources/chess/positions/";
-    
-    @BeforeEach
-    void setUp() {
-        parser = new Parser();
-    }
-    
-    // Helper to avoid lots of redundant try/catches
-    Game parseGameFromFileOrFail(String fileName) {
-        try {
-            return parser.parseFromFENFile(resourcesDir + fileName);
-        } catch (Exception e) {
-            fail("Failed during test setup: cannot parse file " + fileName);
-        }
-        return null;
-    }
 
     @Test
     void canCreatePlayerFromPieceCollection() {
@@ -54,7 +35,7 @@ class PlayerTest {
     
     @Test
     void getCapableMovesReturnsPawnCaptureInScandinavian() {
-        Game scandinavianGame = parseGameFromFileOrFail("scandinavian.fen");
+        Game scandinavianGame = TestUtils.parseGameFromFileOrFail("scandinavian.fen");
         Move[] whiteCapable = scandinavianGame.getWhitePlayer().getCapableMoves(scandinavianGame);
         Move pawnCapture = null;
         for (Move move : whiteCapable) {
@@ -68,14 +49,14 @@ class PlayerTest {
     
     @Test
     void getEnPassantMoves() {
-        Game enPassantGame = parseGameFromFileOrFail("en_passant.fen");
+        Game enPassantGame = TestUtils.parseGameFromFileOrFail("en_passant.fen");
         ArrayList<Move> moves = enPassantGame.getWhitePlayer().getEnPassantMoves(enPassantGame);
         assertEquals(2, moves.size());
     }
     
     @Test
     void getCapableMovesEnPassantHas4Captures() {
-        Game enPassantGame = parseGameFromFileOrFail("en_passant.fen");
+        Game enPassantGame = TestUtils.parseGameFromFileOrFail("en_passant.fen");
         Move[] moves = enPassantGame.getWhitePlayer().getCapableMoves(enPassantGame);
         int numCaptures = 0;
         for (Move move : moves) {
@@ -88,7 +69,7 @@ class PlayerTest {
     
     @Test
     void playerMakingAKingMoveRemovesCastlingAbility() {
-        Game scandinavianGame = parseGameFromFileOrFail("scandinavian.fen");
+        Game scandinavianGame = TestUtils.parseGameFromFileOrFail("scandinavian.fen");
         Player whitePlayer = scandinavianGame.getWhitePlayer();
         assertTrue(whitePlayer.canCastleKingside);
         assertTrue(whitePlayer.canCastleQueenside);
@@ -101,7 +82,7 @@ class PlayerTest {
     
     @Test
     void playerMakingARookMoveRemovesQueensideCastlingAbility() {
-        Game flankAttackGame = parseGameFromFileOrFail("flank_attack.fen");
+        Game flankAttackGame = TestUtils.parseGameFromFileOrFail("flank_attack.fen");
         Player white = flankAttackGame.getWhitePlayer();
         Player black = flankAttackGame.getBlackPlayer();
         Square a2 = new Square("a2");
@@ -121,7 +102,7 @@ class PlayerTest {
 
     @Test
     void playerMakingARookMoveRemovesKingsideCastlingAbility() {
-        Game flankAttackGame = parseGameFromFileOrFail("flank_attack.fen");
+        Game flankAttackGame = TestUtils.parseGameFromFileOrFail("flank_attack.fen");
         Player white = flankAttackGame.getWhitePlayer();
         Player black = flankAttackGame.getBlackPlayer();
         Square h2 = new Square("h2");
