@@ -121,6 +121,20 @@ class PlayerTest {
     }
     
     @Test
+    void playerDoesNotMakeMoveIfMoverIsOppositeColor() {
+        Game game = new Game();
+        Player whitePlayer = game.getWhitePlayer();
+        Piece whiteBishop = game.getPieceAt("f1");
+        game.makeMove(new Move(game.getPieceAt("e2"), "e3"));
+        game.makeMove(new Move(game.getPieceAt("b7"), "b6"));
+        assertEquals(new Square("f1"), whiteBishop.getSquare());
+        whitePlayer.makeMove(new Move(game.getPieceAt("c8"), "a6"));
+        assertEquals(new Square("f1"), whiteBishop.getSquare());
+        whitePlayer.makeMove(new Move(game.getPieceAt("f1"), "a6"));
+        assertEquals(new Square("a6"), whiteBishop.getSquare());
+    }
+    
+    @Test
     void canCopyPlayer() {
         Player original = new Player(true);
         Player copy = new Player(original);

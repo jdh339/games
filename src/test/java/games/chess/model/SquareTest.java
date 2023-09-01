@@ -7,6 +7,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class SquareTest {
 
     @Test
+    void testEquals() {
+        assertEquals(new Square("e4"), new Square("e4"));
+        assertNotEquals(new Square("e1"), null);
+    }
+    
+    @Test
     void canParseReturnsTrueForAllSquares() {
         for (int fileIndex = 0; fileIndex < 8; fileIndex++) {
             for (int rank = 1; rank <= 8; rank++) {

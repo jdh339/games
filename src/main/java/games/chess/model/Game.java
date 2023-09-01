@@ -220,6 +220,8 @@ public class Game {
         whiteToMove = !whiteToMove;
     }
     
+    
+    
     private void loadPiecePositionsToBoard(Player player) {
         for (Piece piece : player.getPieces()) {
             setPieceAt(piece.getSquare(), piece);
