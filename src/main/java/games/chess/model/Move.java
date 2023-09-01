@@ -19,7 +19,11 @@ public class Move {
     }
     
     public Move(Piece mover, String squareName) {
-        this(mover, new Square(squareName));
+        this(mover, new Square(squareName), null);
+    }
+    
+    public Move(Piece mover, String squareName, Piece capturedPiece) {
+        this(mover, new Square(squareName), capturedPiece);
     }
 
     public Move(Piece mover, Square destSquare, Piece capturedPiece) {
@@ -65,6 +69,16 @@ public class Move {
     public boolean isPawnDoubleJump() {
         return mover instanceof Pawn && 
                 Math.abs(destSquare.getRankIndex() - originSquare.getRankIndex()) == 2;
+    }
+    
+    public Square getEnPassantSquare() {
+        if (!isPawnDoubleJump()) {
+            return null;
+        }
+        
+        int rankModifier = mover.isWhite() ? -1 : 1;
+        int rankIndex = destSquare.getRankIndex() + rankModifier;
+        return new Square(destSquare.getFileIndex(), rankIndex);
     }
 
     public boolean isCastle() {

@@ -175,15 +175,11 @@ public class Game {
             Piece captured = move.getCapturedPiece();
             captured.removeFromPlay();
             setPieceAt(captured.getSquare(), null);
-        } else if (move.isPawnDoubleJump()) {
-            // For a pawn double jump, set the en passant square to the square behind the pawn. 
-            int rankModifier = move.getMover().isWhite() ? -1 : 1;
-            int rankIndex = move.getDestSquare().getRankIndex() + rankModifier;
-            enPassantSquare = new Square(move.getDestSquare().getFileIndex(), rankIndex);
-        }
+        } 
         getActivePlayer().makeMove(move);
         setPieceAt(move.getOriginSquare(), null);
         setPieceAt(move.getDestSquare(), move.getMover());
+        enPassantSquare = move.getEnPassantSquare();
         moveHistory.push(move);
         whiteToMove = !whiteToMove;
     }
@@ -217,6 +213,10 @@ public class Game {
             setPieceAt(captured.getSquare(), captured);
         }
         
+        // Handle the en-passant square: peek at the preceding move (before the one 
+        // we are undoing) to see if it is a pawn double jump. If so, set the en-passant square.
+        // Note that FEN files don't have a complete move history, so undoing moves is limited.
+        enPassantSquare = moveHistory.isEmpty() ? null : moveHistory.peek().getEnPassantSquare();
         whiteToMove = !whiteToMove;
     }
     
