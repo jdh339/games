@@ -11,6 +11,40 @@ class GameTest {
     void readStartPositionFromFile() {
         
     }
+    
+    @Test
+    void makeMovePushesToMoveHistory() {
+        Game game = new Game();
+        Piece e2Pawn = game.getPieceAt("e2");
+        Move e4 = new Move(e2Pawn, "e4");
+        assertFalse(game.canUndoLastMove());
+        game.makeMove(e4);
+        assertTrue(game.canUndoLastMove());
+    }
+    
+    @Test
+    void undoingLastMoveRemovesFromMoveHistory() {
+        Game game = new Game();
+        Piece e2Pawn = game.getPieceAt("e2");
+        Move e4 = new Move(e2Pawn, "e4");
+        game.makeMove(e4);
+        assertTrue(game.canUndoLastMove());
+        game.undoLastMove();
+        assertFalse(game.canUndoLastMove());
+    }
+    
+    @Test
+    void undoingLastMoveReplacesPieceAtItsPosition() {
+        Game game = new Game();
+        Piece pawn = game.getPieceAt("e2");
+        Move e4 = new Move(pawn, "e4");
+        game.makeMove(e4);
+        assertNull(game.getPieceAt("e2"));
+        assertEquals(game.getPieceAt("e4"), pawn);
+        game.undoLastMove();
+        assertNull(game.getPieceAt("e4"));
+        assertEquals(pawn, game.getPieceAt("e2"));
+    }
 
     @Test
     void makePawnDoubleJumpCorrectlySetsEnPassantSquare() {

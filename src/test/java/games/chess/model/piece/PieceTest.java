@@ -23,6 +23,18 @@ class PieceTest {
         rook.removeFromPlay();
         assertFalse(rook.isInPlay());
     }
+    
+    @Test
+    void returnToPlay() {
+        Piece rook = new Rook(true, new Square("a1"));
+        assertTrue(rook.isInPlay());
+        rook.returnToPlay();
+        assertTrue(rook.isInPlay());
+        rook.removeFromPlay();
+        assertFalse(rook.isInPlay());
+        rook.returnToPlay();
+        assertTrue(rook.isInPlay());
+    }
 
     @Test
     void isWhite() {

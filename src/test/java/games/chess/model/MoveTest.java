@@ -48,14 +48,18 @@ class MoveTest {
     @Test
     void getCanonicalNameWithQueenCaptures() {
         Queen queen = new Queen(false, new Square("d8"));
-        Move move = new Move(queen, new Square("h4"), true);
+        Square h4 = new Square("h4");
+        Pawn captured = new Pawn(true, h4);
+        Move move = new Move(queen, h4, captured);
         assertEquals("Qxh4", move.getCanonicalName());
     }
     
     @Test
     void getCanonicalNameWithPawnCaptures() {
         Pawn pawn = new Pawn(true, new Square("e4"));
-        Move move = new Move(pawn, new Square("d5"), true);
+        Square d5 = new Square("d5");
+        Pawn captured = new Pawn(false, d5);
+        Move move = new Move(pawn, d5, captured);
         assertEquals("exd5", move.getCanonicalName());
     }
     

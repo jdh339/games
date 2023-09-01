@@ -9,6 +9,7 @@ public abstract class Piece {
 
     private final boolean isWhite;
     private Square square;
+    private boolean isInPlay = true;
 
     public Piece(boolean isWhite, Square initialPosition) {
         this.isWhite = isWhite;
@@ -72,7 +73,7 @@ public abstract class Piece {
     }
 
     public boolean isInPlay() {
-        return square != null && square.isOnBoard();
+        return square != null && square.isOnBoard() && isInPlay;
     }
 
     public void makeMove(Move move) {
@@ -80,7 +81,11 @@ public abstract class Piece {
     }
 
     public void removeFromPlay() {
-        this.square = null;
+        isInPlay = false;
+    }
+    
+    public void returnToPlay() {
+        isInPlay = true;
     }
 
     /**

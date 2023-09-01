@@ -7,7 +7,7 @@ import games.chess.model.piece.Piece;
 public class Move {
 
     private final Piece mover;
-    private final boolean isCapture;
+    private final Piece capturedPiece;
     private final Square originSquare;
     private final Square destSquare;
 
@@ -15,17 +15,25 @@ public class Move {
     boolean isAmbiguousByRank = false;
     
     public Move(Piece mover, Square destSquare) {
-        this.mover = mover;
-        this.originSquare = mover.getSquare();
-        this.destSquare = destSquare;
-        this.isCapture = false;
+        this(mover, destSquare, null);
+    }
+    
+    public Move(Piece mover, String squareName) {
+        this(mover, new Square(squareName));
     }
 
-    public Move(Piece mover, Square destSquare, boolean isCapture) {
+    public Move(Piece mover, Square destSquare, Piece capturedPiece) {
         this.mover = mover;
         this.originSquare = mover.getSquare();
         this.destSquare = destSquare;
-        this.isCapture = isCapture;
+        this.capturedPiece = capturedPiece;
+    }
+    
+    public Move(Move toCopy, Game game) {
+        this.mover = game.getPieceAt(toCopy.getOriginSquare());
+        this.originSquare = toCopy.getOriginSquare();
+        this.destSquare = toCopy.getDestSquare();
+        this.capturedPiece = toCopy.getCapturedPiece();
     }
 
     public static boolean canParse(String moveName) {
@@ -45,9 +53,13 @@ public class Move {
     public Piece getMover() {
         return mover;
     }
+    
+    public Piece getCapturedPiece() {
+        return capturedPiece;
+    }
 
     public boolean isCapture() {
-        return isCapture;
+        return this.capturedPiece != null;
     }
 
     public boolean isPawnDoubleJump() {
@@ -72,7 +84,6 @@ public class Move {
      * Writes this move in standard Chess notation.
      * Examples: e4, Be2, exd5, 0-0, Rd8#
      * 
-     * // TODO - castling
      * // TODO - checks and checkmates
      * 
      * @return a String representation of the move, in normal Chess notation.
@@ -84,13 +95,13 @@ public class Move {
         
         StringBuilder builder = new StringBuilder();
         builder.append(mover.getAbbrevName());
-        if (isAmbiguousByFile || (mover instanceof Pawn && isCapture)) {
+        if (isAmbiguousByFile || (mover instanceof Pawn && isCapture())) {
             builder.append(mover.getSquare().getFileName());
         }
         if (isAmbiguousByRank) {
             builder.append(mover.getSquare().getRankName());
         }
-        if (isCapture) {
+        if (isCapture()) {
             builder.append("x");
         }
         builder.append(destSquare.getName());

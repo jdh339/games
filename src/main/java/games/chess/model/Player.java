@@ -143,7 +143,7 @@ public class Player {
             } else {
                 if (isOppositeColor(occupier)) {
                     if (!(mover instanceof Pawn)) { // Capture if the mover isn't a pawn.
-                        moves.add(new Move(mover, dest, true));
+                        moves.add(new Move(mover, dest, occupier));
                     }
                 }
                 break; // Break at the first occupied square.
@@ -163,12 +163,12 @@ public class Player {
 
                 Piece atLeft = game.getPieceAt(left);
                 if (atLeft != null && isOppositeColor(atLeft)) {
-                    pawnCaptures.add(new Move(mover, left, true));
+                    pawnCaptures.add(new Move(mover, left, atLeft));
                 }
 
                 Piece atRight = game.getPieceAt(right);
                 if (atRight != null && isOppositeColor(atRight)) {
-                    pawnCaptures.add(new Move(mover, right, true));
+                    pawnCaptures.add(new Move(mover, right, atRight));
                 }
             }
         }
@@ -185,13 +185,13 @@ public class Player {
             
             Piece atLeft = game.getPieceAt(left);
             if (atLeft instanceof Pawn && isSameColor(atLeft)) {
-                Move move = new Move(atLeft, game.getEnPassantSquare(), true);
+                Move move = new Move(atLeft, game.getEnPassantSquare(), atLeft);
                 enPassantMoves.add(move);
             }
             
             Piece atRight = game.getPieceAt(right);
             if (atRight instanceof Pawn && isSameColor(atRight)) {
-                Move move = new Move(atRight, game.getEnPassantSquare(), true);
+                Move move = new Move(atRight, game.getEnPassantSquare(), atRight);
                 enPassantMoves.add(move);
             }
         }

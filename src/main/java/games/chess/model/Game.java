@@ -2,8 +2,10 @@ package games.chess.model;
 
 import games.chess.model.piece.Piece;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 
 public class Game {
 
@@ -11,13 +13,16 @@ public class Game {
     private final Piece[][] board;
     private final Player whitePlayer;
     private final Player blackPlayer;
+    private final Deque<Move> moveHistory;
     private Square enPassantSquare;
-
+    
+    
     public Game() {
         whiteToMove = true;
+        board = new Piece[8][8];
         whitePlayer = new Player(true);
         blackPlayer = new Player(false);
-        board = new Piece[8][8];
+        moveHistory = new ArrayDeque<>();
         enPassantSquare = null;
         loadPiecePositionsToBoard(whitePlayer);
         loadPiecePositionsToBoard(blackPlayer);
@@ -32,10 +37,11 @@ public class Game {
      */
     public Game(boolean whiteToMove, Player white, Player black, Square enPassantSquare) {
         this.whiteToMove = whiteToMove;
+        this.board = new Piece[8][8];
         this.whitePlayer = white;
         this.blackPlayer = black;
+        this.moveHistory = new ArrayDeque<>();
         this.enPassantSquare = enPassantSquare;
-        this.board = new Piece[8][8];
         loadPiecePositionsToBoard(white);
         loadPiecePositionsToBoard(black);
     }
@@ -44,22 +50,26 @@ public class Game {
      * Creates a deep copy of the given game, including copying Players and pieces. 
      * @param toCopy a Game to copy, so we can modify the new one without changing the original. 
      */
-    public Game(Game toCopy) {
+    private Game(Game toCopy) {
         this.whiteToMove = toCopy.whiteToMove;
+        this.board = new Piece[8][8];
         this.whitePlayer = new Player(toCopy.whitePlayer);
         this.blackPlayer = new Player(toCopy.blackPlayer);
+        this.moveHistory = new ArrayDeque<>(toCopy.moveHistory);
         this.enPassantSquare = toCopy.enPassantSquare;
-        this.board = new Piece[8][8];
         loadPiecePositionsToBoard(whitePlayer);
         loadPiecePositionsToBoard(blackPlayer);
     }
-
 
     public Piece getPieceAt(Square square) {
         if (!square.isOnBoard()) {
             return null;
         }
         return board[square.getFileIndex()][square.getRankIndex()];
+    }
+    
+    public Piece getPieceAt(String squareName) {
+        return getPieceAt(new Square(squareName));
     }
 
     public Player getActivePlayer() {
@@ -140,11 +150,12 @@ public class Game {
             
             // Now check whether making the move would leave this player in check.
             // If so, it is an illegal move.
-            Game clone = new Game(this);
-            clone.makeMove(move);
-            if (clone.isInactivePlayerInCheck()) {
-                continue;
-            }
+            Game cloneGame = new Game(this);
+            Move cloneMove = new Move(move, cloneGame);
+            cloneGame.makeMove(cloneMove);
+//            if (cloneGame.isInactivePlayerInCheck()) {
+//                continue;
+//            }
             
             legalMoves.add(move);
         }
@@ -161,14 +172,9 @@ public class Game {
      */
     public void makeMove(Move move) {
         if (move.isCapture()) {
-            Piece captured = getPieceAt(move.getDestSquare());
-            
-            // In the special case of en passant, the captured piece is on a different
-            // square than the "dest square".
-            if (move.getDestSquare() == enPassantSquare) {
-                captured = getEnPassantCapturablePiece();
-            }
+            Piece captured = move.getCapturedPiece();
             captured.removeFromPlay();
+            setPieceAt(captured.getSquare(), null);
         } else if (move.isPawnDoubleJump()) {
             // For a pawn double jump, set the en passant square to the square behind the pawn. 
             int rankModifier = move.getMover().isWhite() ? -1 : 1;
@@ -178,6 +184,39 @@ public class Game {
         getActivePlayer().makeMove(move);
         setPieceAt(move.getOriginSquare(), null);
         setPieceAt(move.getDestSquare(), move.getMover());
+        moveHistory.push(move);
+        whiteToMove = !whiteToMove;
+    }
+
+    /**
+     * @return Whether we have a move in the history that we can undo.
+     */
+    public boolean canUndoLastMove() {
+        return !moveHistory.isEmpty();
+    }
+
+    /**
+     * Restores this Game to the state it was before the last move occurred.
+     * This includes returning to play any captured piece, and restoring
+     * castle abilities.
+     * 
+     * If there is no move history that we can undo, this method does nothing.
+     */
+    public void undoLastMove() {
+        if (!canUndoLastMove()) {
+            return;
+        }
+        
+        Move lastMove = moveHistory.pop();
+        setPieceAt(lastMove.getOriginSquare(), lastMove.getMover());
+        setPieceAt(lastMove.getDestSquare(), null);
+        
+        if (lastMove.isCapture()) {
+            Piece captured = lastMove.getCapturedPiece();
+            captured.returnToPlay();
+            setPieceAt(captured.getSquare(), captured);
+        }
+        
         whiteToMove = !whiteToMove;
     }
     
