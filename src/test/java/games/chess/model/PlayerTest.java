@@ -145,4 +145,51 @@ class PlayerTest {
         original.makeMove(new Move(originalPawn, new Square("a3")));
         assertNotEquals(originalPawn.getSquare(), copyPawn.getSquare());
     }
+    
+    @Test
+    void removingCastlingAbilityWithKingMoveIsSavedInMove() {
+        Game scandinavianGame = TestUtils.parseGameFromFileOrFail("scandinavian.fen");
+        Player whitePlayer = scandinavianGame.getWhitePlayer();
+        Move Ke2 = new Move(whitePlayer.getKing(), "e2");
+        scandinavianGame.makeMove(Ke2);
+        assertTrue(Ke2.didRevokeKingsideCastle);
+        assertTrue(Ke2.didRevokeQueensideCastle);
+        scandinavianGame.makeMove(new Move(scandinavianGame.getPieceAt("a7"), "a6"));
+        Move Ke3 = new Move(whitePlayer.getKing(), "e3");
+        scandinavianGame.makeMove(Ke3);
+        assertFalse(Ke3.didRevokeKingsideCastle);
+        assertFalse(Ke3.didRevokeQueensideCastle);
+    }
+    
+    @Test
+    void removingKingsideCastlingAbilityWithRookMoveIsSavedInMove() {
+        Game flankAttackGame = TestUtils.parseGameFromFileOrFail("flank_attack.fen");
+        Player white = flankAttackGame.getWhitePlayer();
+        Player black = flankAttackGame.getBlackPlayer();
+        Move Rh2 = new Move(flankAttackGame.getPieceAt("h1"), "h2");
+        Move Rh7 = new Move(flankAttackGame.getPieceAt("h8"), "h7");
+        assertFalse(Rh2.didRevokeKingsideCastle);
+        white.makeMove(Rh2);
+        assertTrue(Rh2.didRevokeKingsideCastle);
+
+        assertFalse(Rh7.didRevokeKingsideCastle);
+        black.makeMove(Rh7);
+        assertTrue(Rh7.didRevokeKingsideCastle);
+    }
+
+    @Test
+    void removingQueensideCastlingAbilityWithRookMoveIsSavedInMove() {
+        Game flankAttackGame = TestUtils.parseGameFromFileOrFail("flank_attack.fen");
+        Player white = flankAttackGame.getWhitePlayer();
+        Player black = flankAttackGame.getBlackPlayer();
+        Move Ra2 = new Move(flankAttackGame.getPieceAt("a1"), "a2");
+        Move Ra7 = new Move(flankAttackGame.getPieceAt("a8"), "a7");
+        assertFalse(Ra2.didRevokeQueensideCastle);
+        white.makeMove(Ra2);
+        assertTrue(Ra2.didRevokeQueensideCastle);
+
+        assertFalse(Ra7.didRevokeQueensideCastle);
+        black.makeMove(Ra7);
+        assertTrue(Ra7.didRevokeQueensideCastle);
+    }
 }

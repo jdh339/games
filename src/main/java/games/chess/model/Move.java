@@ -11,6 +11,8 @@ public class Move {
     private final Square originSquare;
     private final Square destSquare;
 
+    boolean didRevokeKingsideCastle = false;
+    boolean didRevokeQueensideCastle = false;
     boolean isAmbiguousByFile = false;
     boolean isAmbiguousByRank = false;
     

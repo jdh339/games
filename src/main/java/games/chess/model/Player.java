@@ -81,6 +81,8 @@ public class Player {
         
         // If we are moving the king anywhere, then we can no longer castle (after this move).
         if (mover instanceof King) {
+            move.didRevokeKingsideCastle = canCastleKingside;
+            move.didRevokeQueensideCastle = canCastleQueenside;
             canCastleQueenside = false;
             canCastleKingside = false;
         }
@@ -94,8 +96,10 @@ public class Player {
             Square aRookStartingSquare = new Square(0, startingRankIndex);
             Square hRookStartingSquare = new Square(7, startingRankIndex);
             if (mover.getSquare().equals(aRookStartingSquare)) {
+                move.didRevokeQueensideCastle = canCastleQueenside;
                 canCastleQueenside = false;
             } else if (mover.getSquare().equals(hRookStartingSquare)) {
+                move.didRevokeKingsideCastle = canCastleKingside;
                 canCastleKingside = false;
             }
         }
