@@ -1,0 +1,12 @@
+
+
+
+Game (my move)
+
+Depth 1: (7 descendants). Eval each game and see if any are wins. Else, they are ties and
+need to eval further.
+
+Depth 2: (49 descendants). Eval each game and see if any are losses. If so, it should bubble up
+to the parent node (consider that move a loss). This means that if I do move R1 and opponent does B2,
+I lose. So, any descendants of R1 should be skipped on eval. (I.E. for each node that I eval at this
+stage, check if its parent
